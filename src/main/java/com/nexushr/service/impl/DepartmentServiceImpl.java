@@ -1,6 +1,7 @@
 package com.nexushr.service.impl;
 
 import com.nexushr.entity.Department;
+import com.nexushr.exception.DepartmentNotFoundException;
 import com.nexushr.repository.DepartmentRepository;
 import com.nexushr.service.DepartmentService;
 import org.springframework.stereotype.Service;
@@ -10,46 +11,49 @@ import java.util.List;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private final DepartmentRepository repository;
+    private final DepartmentRepository departmentRepositoryrepository;
 
     public DepartmentServiceImpl(DepartmentRepository repository) {
-        this.repository = repository;
+        this.departmentRepositoryrepository = repository;
     }
 
     @Override
     public Department saveDepartment(Department department) {
-        return repository.save(department);
+        return departmentRepositoryrepository.save(department);
     }
 
     @Override
     public List<Department> getAllDepartments() {
-        return repository.findAll();
+        return departmentRepositoryrepository.findAll();
     }
 
     @Override
     public Department getDepartmentById(Long id) {
-        return repository.findById(id).orElse(null);
+        return departmentRepositoryrepository.findById(id)
+                .orElseThrow(() ->
+                        new DepartmentNotFoundException("Department not found with id: " + id));
     }
 
     @Override
     public Department updateDepartment(Long id, Department department) {
 
-        Department existingDepartment =
-                repository.findById(id).orElseThrow(()->new RuntimeException("Department not found for this id"));
+        Department existingDepartment = departmentRepositoryrepository.findById(id)
+                .orElseThrow(() ->
+                        new DepartmentNotFoundException("Department not found with id: " + id));
 
-        if (existingDepartment != null) {
+        existingDepartment.setName(department.getName());
+        existingDepartment.setDescription(department.getDescription());
 
-            existingDepartment.setName(department.getName());
-            existingDepartment.setDescription(department.getDescription());
-
-            return repository.save(existingDepartment);
-        }
-
-        return null;
+        return departmentRepositoryrepository.save(existingDepartment);
     }
 
     @Override
     public void deleteDepartment(Long id) {
-        repository.deleteById(id);
+
+        Department department = departmentRepositoryrepository.findById(id)
+                .orElseThrow(() ->
+                        new DepartmentNotFoundException("Department not found with id: " + id));
+
+        departmentRepositoryrepository.delete(department);
     }
 }

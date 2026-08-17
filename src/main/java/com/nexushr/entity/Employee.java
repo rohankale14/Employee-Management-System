@@ -1,6 +1,14 @@
 package com.nexushr.entity;
 
+import com.nexushr.enums.EmployeeStatus;
+import com.nexushr.enums.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,15 +19,42 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name is required")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Please enter a valid email")
     @Column(unique = true)
     private String email;
 
+    @NotBlank(message = "Phone number is required")
+    @Column(unique = true)
+    private String phoneNumber;
+
+    @NotBlank(message = "Designation is required")
+    private String designation;
+
+    @NotNull(message = "Salary is required")
+    @Positive(message = "Salary must be greater than zero")
     private Double salary;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private LocalDate dateOfBirth;
+
+    private String address;
+
+
+    @Enumerated(EnumType.STRING)
+    private EmployeeStatus status;
+
+    private LocalDate joiningDate;
+
+    @NotNull(message = "Department is required")
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
@@ -71,12 +106,70 @@ public class Employee {
         this.email = email;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
     public Double getSalary() {
         return salary;
     }
 
     public void setSalary(Double salary) {
         this.salary = salary;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public EmployeeStatus getStatus()
+    {
+        return status;
+    }
+
+    public LocalDate getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+        this.joiningDate = joiningDate;
+    }
+
+    public void setStatus(EmployeeStatus status)
+    {
+        this.status=status;
     }
 
     public Department getDepartment() {
@@ -102,4 +195,6 @@ public class Employee {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
 }

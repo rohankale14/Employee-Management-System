@@ -1,7 +1,11 @@
 package com.nexushr.controller;
 
+import com.nexushr.dto.EmployeeRequestDto;
+import com.nexushr.dto.EmployeeResponseDto;
 import com.nexushr.entity.Employee;
 import com.nexushr.service.EmployeeService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +21,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Employee saveEmployee(@RequestBody Employee employee) {
+    public EmployeeResponseDto saveEmployee(@Valid  @RequestBody EmployeeRequestDto employee) {
         return service.saveEmployee(employee);
     }
 
@@ -33,7 +37,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
-                                   @RequestBody Employee employee) {
+                                  @Valid @RequestBody Employee employee) {
         return service.updateEmployee(id, employee);
     }
 
@@ -41,5 +45,34 @@ public class EmployeeController {
     public String deleteEmployee(@PathVariable Long id) {
         service.deleteEmployee(id);
         return "Employee deleted successfully";
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Employee> getEmployeeByEmail(@PathVariable String email) {
+
+        return ResponseEntity.ok(service.getEmployeeByEmail(email));
+    }
+
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<List<Employee>> getEmployeesByDepartmentId(
+            @PathVariable Long departmentId) {
+
+        return ResponseEntity.ok(service.getEmployeesByDepartmentId(departmentId));
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<List<Employee>> getEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return ResponseEntity.ok(service.getAllEmployees(page, size).getContent());
+    }
+
+    @GetMapping("/sort")
+    public ResponseEntity<List<Employee>> getEmployeesSorted(
+            @RequestParam String field,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        return ResponseEntity.ok(service.getAllEmployeesSorted(field,direction));
     }
 }

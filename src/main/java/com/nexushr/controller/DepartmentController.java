@@ -2,6 +2,7 @@ package com.nexushr.controller;
 
 import com.nexushr.entity.Department;
 import com.nexushr.service.DepartmentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +14,13 @@ import java.util.List;
 public class DepartmentController {
 
     private final DepartmentService service;
-
+// here use constructor injection
     public DepartmentController(DepartmentService service) {
         this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity< Department> createDepartment(@RequestBody Department department) {
+    public ResponseEntity< Department> createDepartment(@Valid  @RequestBody Department department) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.saveDepartment(department));
     }
 
@@ -36,7 +37,7 @@ public class DepartmentController {
     @PutMapping("/{id}")
     public Department updateDepartment(
             @PathVariable Long id,
-            @RequestBody Department department) {
+          @Valid  @RequestBody Department department) {
 
         return service.updateDepartment(id, department);
     }
